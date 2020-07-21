@@ -57,9 +57,6 @@ namespace SimpleDi
                 .BuildServiceProvider();
 
             //configure console logging
-            serviceProvider
-                .GetService<ILoggerFactory>();
-
             var logger = serviceProvider.GetService<ILoggerFactory>()
                 .CreateLogger<Program>();
             logger.LogDebug("Starting application");
