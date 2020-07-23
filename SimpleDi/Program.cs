@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace SimpleDi
 {
@@ -11,15 +12,14 @@ namespace SimpleDi
 
     public class FooService : IFooService
     {
-        private readonly ILogger<FooService> _logger;
-        public FooService(ILoggerFactory loggerFactory)
+        public FooService()
         {
-            _logger = loggerFactory.CreateLogger<FooService>();
+            Console.WriteLine("Creating FooService object");
         }
 
         public void DoThing(int number)
         {
-            _logger.LogInformation($"Doing the thing {number}");
+            Console.WriteLine($"Doing the thing {number}");
         }
     }
 
@@ -33,6 +33,7 @@ namespace SimpleDi
         private readonly IFooService _fooService;
         public BarService(IFooService fooService)
         {
+            Console.WriteLine("Creating BarService object");
             _fooService = fooService;
         }
 
@@ -51,21 +52,15 @@ namespace SimpleDi
         {
             //setup our DI
             var serviceProvider = new ServiceCollection()
-                .AddLogging()
                 .AddSingleton<IFooService, FooService>()
                 .AddSingleton<IBarService, BarService>()
                 .BuildServiceProvider();
-
-            //configure console logging
-            var logger = serviceProvider.GetService<ILoggerFactory>()
-                .CreateLogger<Program>();
-            logger.LogDebug("Starting application");
 
             //do the actual work here
             var bar = serviceProvider.GetService<IBarService>();
             bar.DoSomeRealWork();
 
-            logger.LogDebug("All done!");
+            Console.WriteLine("All done!");
         }
     }
 }
